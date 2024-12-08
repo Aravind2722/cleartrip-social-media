@@ -16,4 +16,15 @@ public class UserResponseDTO {
     private String email;
     private String contact;
 
+    @Override
+    public String toString() {
+        return "{" +
+                "\n\tid: " + this.getId() +
+                "\n\tname: " + this.getFirstName().trim() + " " + this.getLastName().trim() +
+                "\n\temail: " + this.getEmail() +
+                "\n\tcontact: " + this.getContact() +
+                "\n\tdate-of-birth: " + this.getDateOfBirth() +
+                "\n}\n";
+    }
+
 }

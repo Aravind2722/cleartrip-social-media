@@ -33,10 +33,10 @@ public class DateOfBirthBuilder {
 
     public DateOfBirth build() throws InvalidDateOfBirthException {
 
-        if (!isYearValid()) throw new InvalidDateOfBirthException("Invalid year provided for date of birth " + this.year + " !");
+        if (!isYearValid()) throw new InvalidDateOfBirthException("Invalid year provided for date of birth: '" + this.year + "' !");
         Month monthType = getMonthType();
-        if (monthType == null) throw new InvalidDateOfBirthException("Invalid month provided for date of birth! " + this.month + " !");
-        if (!isDayValid(monthType)) throw new InvalidDateOfBirthException("Invalid day provided for date of birth! " + this.day + " !");
+        if (monthType == null) throw new InvalidDateOfBirthException("Invalid month provided for date of birth: '" + this.month + "' !");
+        if (!isDayValid(monthType)) throw new InvalidDateOfBirthException("Invalid day provided for date of birth: '" + this.day + "' !");
 
         DateOfBirth dob = new DateOfBirth();
         dob.setYear(this.year);

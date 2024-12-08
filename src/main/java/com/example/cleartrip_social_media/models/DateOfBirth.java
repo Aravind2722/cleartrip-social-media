@@ -11,4 +11,8 @@ public class DateOfBirth {
     private int day;
     private Month month;
     private int year;
+    @Override
+    public String toString() {
+        return this.getDay() + "-" + this.getMonth() + "-" + this.getYear();
+    }
 }

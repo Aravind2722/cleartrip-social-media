@@ -27,4 +27,9 @@ public class UserRepository {
         return Optional.empty();
     }
 
+    public Optional<User> getUserById(String id) {
+        if (users.containsKey(id)) return Optional.of(users.get(id));
+        return Optional.empty();
+    }
+
 }
