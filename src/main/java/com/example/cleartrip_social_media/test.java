@@ -1,21 +1,12 @@
 package com.example.cleartrip_social_media;
 
-import com.example.cleartrip_social_media.exceptions.InvalidDateOfBirthException;
+import com.example.cleartrip_social_media.utilities.RelativeTimeFormatter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 public class test {
-    public static void main(String[] args) throws InvalidDateOfBirthException {
-        Simple pivot = new Simple("harish");
-        Set<Simple> set = new HashSet<>();
-
-//        set.add(pivot);
-        set.add(new Simple("harish"));
-        set.add(new Simple("kanishka"));
-
-        Simple pivot2 = new Simple("harish");
-
-        System.out.println(pivot.equals(pivot2));
+    public static void main(String[] args) {
+        LocalDateTime time = LocalDateTime.now().minusMonths(1).minusDays(30);
+        System.out.println(RelativeTimeFormatter.getRelativeTime(time));
     }
 }

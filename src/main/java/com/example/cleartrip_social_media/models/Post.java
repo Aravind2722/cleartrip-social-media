@@ -10,8 +10,11 @@ import java.util.List;
 @Setter
 public class Post {
     private String id;
-    private String userId;
+    private User user;
     private String content;
+    private Long likes;
+    private Long dislikes;
     private List<PostInteraction> postInteractions;
     private LocalDateTime postedAt;
+
 }

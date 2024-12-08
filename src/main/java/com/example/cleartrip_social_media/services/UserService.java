@@ -4,16 +4,9 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.cleartrip_social_media.builders.DateOfBirthBuilder;
 import com.example.cleartrip_social_media.builders.UserInteractionResponseDTOBuilder;
 import com.example.cleartrip_social_media.builders.UserResponseDTOBuilder;
-import com.example.cleartrip_social_media.dtos.UserInteractionRequestDTO;
-import com.example.cleartrip_social_media.dtos.UserInteractionResponseDTO;
-import com.example.cleartrip_social_media.dtos.UserRequestDTO;
-import com.example.cleartrip_social_media.dtos.UserResponseDTO;
+import com.example.cleartrip_social_media.dtos.*;
 import com.example.cleartrip_social_media.enums.UserInteractionType;
-import com.example.cleartrip_social_media.enums.UserNotFoundException;
-import com.example.cleartrip_social_media.exceptions.InvalidContactNumberException;
-import com.example.cleartrip_social_media.exceptions.InvalidDateOfBirthException;
-import com.example.cleartrip_social_media.exceptions.InvalidUserInteractionRequestException;
-import com.example.cleartrip_social_media.exceptions.UserAlreadyExistsException;
+import com.example.cleartrip_social_media.exceptions.*;
 import com.example.cleartrip_social_media.models.User;
 import com.example.cleartrip_social_media.repositories.UserRepository;
 import com.fasterxml.uuid.Generators;
@@ -25,7 +18,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -109,6 +102,7 @@ public class UserService {
                 .setUserInteractionType(userInteractionRequestDTO.getUserInteractionType())
                 .build();
     }
+
 
     public void validateUserInteractionRequestDTO(UserInteractionRequestDTO userInteractionRequestDTO) {
         if (userInteractionRequestDTO == null) throw new IllegalArgumentException("user interaction cannot be empty!");

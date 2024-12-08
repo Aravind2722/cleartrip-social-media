@@ -2,7 +2,7 @@ package com.example.cleartrip_social_media.controllers;
 
 import com.example.cleartrip_social_media.dtos.*;
 import com.example.cleartrip_social_media.enums.ResponseStatus;
-import com.example.cleartrip_social_media.enums.UserNotFoundException;
+import com.example.cleartrip_social_media.exceptions.UserNotFoundException;
 import com.example.cleartrip_social_media.exceptions.InvalidContactNumberException;
 import com.example.cleartrip_social_media.exceptions.InvalidDateOfBirthException;
 import com.example.cleartrip_social_media.exceptions.InvalidUserInteractionRequestException;
@@ -25,7 +25,7 @@ public class UserController {
             return new ResponseDTO<>(
                     userResponseDTO,
                     ResponseStatus.CREATED,
-                    userResponseDTO.getFirstName() + userResponseDTO.getLastName() + " Registered!!"
+                    userResponseDTO.getFirstName().trim() + " " + userResponseDTO.getLastName().trim() + " Registered!!"
             );
         } catch (
                 InvalidDateOfBirthException |
@@ -44,7 +44,7 @@ public class UserController {
             return new ResponseDTO<>(
                     null,
                     ResponseStatus.INTERNAL_SERVER_ERROR,
-                    "Something went wrong. Please try again later"
+                    "Something went wrong, Please try again later!"
             );
         }
     }
@@ -74,6 +74,12 @@ public class UserController {
                     (userInteractionRequestDTO.getUserInteractionType().name().equalsIgnoreCase("follow")) ?
                             (exception.getMessage() + ", Follow unsuccessful!") :
                             (exception.getMessage() + ", Unfollow unsuccessful!")
+            );
+        } catch (Exception exception) {
+            return new ResponseDTO<>(
+                    null,
+                    ResponseStatus.INTERNAL_SERVER_ERROR,
+                    "Something went wrong, Please try again later!"
             );
         }
     }

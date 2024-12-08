@@ -1,5 +1,6 @@
 package com.example.cleartrip_social_media;
 
+import com.example.cleartrip_social_media.controllers.PostController;
 import com.example.cleartrip_social_media.controllers.UserController;
 import com.example.cleartrip_social_media.dtos.*;
 import com.example.cleartrip_social_media.enums.UserInteractionType;
@@ -15,10 +16,12 @@ import java.util.List;
 
 @SpringBootApplication
 public class CleartripSocialMediaApplication implements CommandLineRunner {
-	private UserController userController;
+	private final UserController userController;
+	private final PostController postController;
 	@Autowired
-	public CleartripSocialMediaApplication(UserController userController) {
+	public CleartripSocialMediaApplication(UserController userController, PostController postController) {
 		this.userController = userController;
+		this.postController = postController;
 	}
 
 	public static void main(String[] args) {
@@ -62,34 +65,64 @@ public class CleartripSocialMediaApplication implements CommandLineRunner {
 		);
 		System.out.println(userController.interactWithUser(userInteractionRequestDTO));
 	}
+	public UserResponseDTO registerUser(String firstName, String lastName, int day, String month, int year, String email, String password, String contact) {
+
+		UserRequestDTO userRequestDTO = new UserRequestDTO();
+		userRequestDTO.setFirstName(firstName);
+		userRequestDTO.setLastName(lastName);
+		userRequestDTO.setEmail(email);
+		userRequestDTO.setContact(contact);
+		userRequestDTO.setDateOfBirthDTO(
+				new DateOfBirthDTO(day, month, year)
+		);
+		userRequestDTO.setPassword(password);
+
+		ResponseDTO<UserResponseDTO> responseDTO = userController.registerUser(userRequestDTO);
+		System.out.println(responseDTO);
+		return responseDTO.getEntity();
+	}
+
+	public PostResponseDTO uploadPost(String userId, String content) {
+		ResponseDTO<PostResponseDTO> responseDTO = postController.uploadPost(
+				new PostRequestDTO(userId, content)
+		);
+		System.out.println(responseDTO);
+		return responseDTO.getEntity();
+	}
 	@Override
 	public void run(String... ags) throws InvalidDateOfBirthException {
 		// Creating random users
-		List<UserResponseDTO> users = registerMultipleUsers();
+		UserResponseDTO user1 = registerUser("Alice", "Walker", 27, "12", 2001, "abc@gmail.com", "1234", "9999999999");
+		UserResponseDTO user2 = registerUser("Bob", "Parker", 22, "july", 2004, "def@gmail.com", "5678", "8888888888");
+		UserResponseDTO user3 = registerUser("Ron", "Mosby", 12, "2", 2002, "ghi@gmail.com", "9012", "7777777777");
+		UserResponseDTO user4 = registerUser("Barney", "Stinson", 28, "10", 1997, "jkl@gmail.com", "3456", "6666666666");
 
-		// Following each other
-		for (UserResponseDTO user1 : users) {
-			for (UserResponseDTO user2 : users) {
-				if (user1.equals(user2)) continue;
-				sendUserInteractionRequest(user1.getId(), user2.getId(), UserInteractionType.FOLLOW);
-			}
-		}
+		// Checking Follow requests
+		sendUserInteractionRequest(user1.getId(), user2.getId(), UserInteractionType.FOLLOW);
+		sendUserInteractionRequest(user1.getId(), user3.getId(), UserInteractionType.FOLLOW);
+		sendUserInteractionRequest(user1.getId(), user4.getId(), UserInteractionType.FOLLOW);
+
 		// Checking if redundant follow request works
-		sendUserInteractionRequest(users.get(0).getId(), users.get(1).getId(), UserInteractionType.FOLLOW);
+		sendUserInteractionRequest(user1.getId(), user2.getId(), UserInteractionType.FOLLOW);
 
-		// Unfollowing each other
-		for (UserResponseDTO user1 : users) {
-			for (UserResponseDTO user2 : users) {
-				if (user1.equals(user2)) continue;
-				sendUserInteractionRequest(user1.getId(), user2.getId(), UserInteractionType.UNFOLLOW);
-			}
-		}
+		// Checking Unfollow requests
+		sendUserInteractionRequest(user1.getId(), user4.getId(), UserInteractionType.UNFOLLOW);
+
 		// Checking if redundant unfollow request works
-		sendUserInteractionRequest(users.get(0).getId(), users.get(1).getId(), UserInteractionType.UNFOLLOW);
+		sendUserInteractionRequest(user1.getId(), user4.getId(), UserInteractionType.UNFOLLOW);
+
 
 		// Checking if follow/unfollow request works on anonymous users
-		sendUserInteractionRequest("abc", "efg", UserInteractionType.FOLLOW);
-		sendUserInteractionRequest("abc", "efg", UserInteractionType.UNFOLLOW);
+		sendUserInteractionRequest(user1.getId(), "anonymousUserId", UserInteractionType.FOLLOW);
+		sendUserInteractionRequest(user1.getId(), "anonymousUserId", UserInteractionType.UNFOLLOW);
+
+		PostResponseDTO post1 = uploadPost(user1.getId(), "Writing code for Thinkify Labs");
+		PostResponseDTO post2 = uploadPost(user2.getId(), "Working as an instructor at Scaler academy");
+		PostResponseDTO post3 = uploadPost(user2.getId(), "Secured Very good ratings on teaching sessions");
+		PostResponseDTO post4 = uploadPost(user3.getId(), "Solved more than 1000 DSA problems");
+		PostResponseDTO post5 = uploadPost(user3.getId(), "Maintaining over 500 days of streak in Leetcode");
+		PostResponseDTO post6 = uploadPost(user4.getId(), "Half the way through Masters in Computer Sciende part time");
+		PostResponseDTO post7 = uploadPost(user4.getId(), "Actively Learning system design concepts");
 	}
 
 }
