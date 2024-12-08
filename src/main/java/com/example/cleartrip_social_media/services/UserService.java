@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -65,6 +66,8 @@ public class UserService {
         );
         user.setFollowers(new HashSet<>());
         user.setFollowees(new HashSet<>());
+        user.setPosts(new ArrayList<>());
+        user.setActivity(new ArrayList<>());
 
         User savedUser = userRepository.save(user);
         return UserResponseDTOBuilder.getBuilder()

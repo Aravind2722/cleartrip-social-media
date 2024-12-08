@@ -15,13 +15,13 @@ public class PostResponseDTO {
 
     @Override
     public String toString() {
-        return "\n{" +
-                "\n\tpost-id: " + this.getId() +
-                "\n\tuser-name: " + this.getUserName() +
-                "\n\tcontent: " + this.getContent() +
-                "\n\tlikes: " + this.getLikes() +
-                "\n\tdislikes: " + this.getDislikes() +
-                "\n\tposted-at: " + this.getPostedAt() +
-                "\n}\n";
+        return "\n\t{" +
+                "\n\t\tpost-id: " + this.getId() +
+                "\n\t\tuser-name: " + this.getUserName() +
+                "\n\t\tcontent: " + this.getContent() +
+                "\n\t\tlikes: " + this.getLikes() +
+                "\n\t\tdislikes: " + this.getDislikes() +
+                "\n\t\tposted-at: " + this.getPostedAt() +
+                "\n\t}\n";
     }
 }

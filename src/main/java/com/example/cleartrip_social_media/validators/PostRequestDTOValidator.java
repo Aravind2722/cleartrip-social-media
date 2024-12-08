@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PostRequestValidatorDTO implements Validator<PostRequestDTO> {
+public class PostRequestDTOValidator implements Validator<PostRequestDTO> {
     private final PostService postService;
     @Autowired
-    public PostRequestValidatorDTO(PostService postService) {
+    public PostRequestDTOValidator(PostService postService) {
         this.postService = postService;
     }
 

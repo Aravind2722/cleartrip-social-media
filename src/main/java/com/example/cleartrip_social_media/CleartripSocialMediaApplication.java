@@ -3,16 +3,13 @@ package com.example.cleartrip_social_media;
 import com.example.cleartrip_social_media.controllers.PostController;
 import com.example.cleartrip_social_media.controllers.UserController;
 import com.example.cleartrip_social_media.dtos.*;
+import com.example.cleartrip_social_media.enums.PostInteractionType;
 import com.example.cleartrip_social_media.enums.UserInteractionType;
 import com.example.cleartrip_social_media.exceptions.InvalidDateOfBirthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @SpringBootApplication
 public class CleartripSocialMediaApplication implements CommandLineRunner {
@@ -28,35 +25,6 @@ public class CleartripSocialMediaApplication implements CommandLineRunner {
 		SpringApplication.run(CleartripSocialMediaApplication.class, args);
 	}
 
-	public List <UserResponseDTO> registerMultipleUsers() {
-		UserRequestDTO userRequestDTO1 = new UserRequestDTO();
-		userRequestDTO1.setFirstName("Alice");
-		userRequestDTO1.setLastName("");
-		userRequestDTO1.setEmail("abc@gmail.com");
-		userRequestDTO1.setContact("9999999999");
-		userRequestDTO1.setDateOfBirthDTO(
-				new DateOfBirthDTO(27, "july", 2004)
-		);
-		userRequestDTO1.setPassword("1234");
-
-		UserRequestDTO userRequestDTO2 = new UserRequestDTO();
-		userRequestDTO2.setFirstName("Bob");
-		userRequestDTO2.setLastName("");
-		userRequestDTO2.setEmail("def@gmail.com");
-		userRequestDTO2.setContact("8888888888");
-		userRequestDTO2.setDateOfBirthDTO(
-				new DateOfBirthDTO(22, "12", 2001)
-		);
-		userRequestDTO2.setPassword("5678");
-
-		ResponseDTO<UserResponseDTO> responseDTO1 = userController.registerUser(userRequestDTO1);
-		ResponseDTO<UserResponseDTO> responseDTO2 = userController.registerUser(userRequestDTO2);
-		System.out.println(responseDTO1);
-		System.out.println(responseDTO2);
-
-        return new ArrayList<>(Arrays.asList(responseDTO1.getEntity(), responseDTO2.getEntity()));
-
-	}
 	public void sendUserInteractionRequest(String userId1, String userId2, UserInteractionType userInteractionType) {
 		UserInteractionRequestDTO userInteractionRequestDTO = new UserInteractionRequestDTO(
 				userId1,
@@ -89,15 +57,31 @@ public class CleartripSocialMediaApplication implements CommandLineRunner {
 		System.out.println(responseDTO);
 		return responseDTO.getEntity();
 	}
+
+	public void showFeed(String userId) {
+		System.out.println(postController.showFeed(new FeedRequestDTO(userId)));
+	}
+
+	public PostInteractionResponseDTO interactWithPost(String userId, String postId, PostInteractionType action) {
+		ResponseDTO <PostInteractionResponseDTO> responseDTO = postController.interactWithPost(
+				new PostInteractionRequestDTO(postId, userId, action)
+		);
+		System.out.println(responseDTO);
+		return responseDTO.getEntity();
+	}
 	@Override
 	public void run(String... ags) throws InvalidDateOfBirthException {
 		// Creating random users
+		System.out.println("\n-----------------------------registering users-----------------------------------");
 		UserResponseDTO user1 = registerUser("Alice", "Walker", 27, "12", 2001, "abc@gmail.com", "1234", "9999999999");
 		UserResponseDTO user2 = registerUser("Bob", "Parker", 22, "july", 2004, "def@gmail.com", "5678", "8888888888");
 		UserResponseDTO user3 = registerUser("Ron", "Mosby", 12, "2", 2002, "ghi@gmail.com", "9012", "7777777777");
 		UserResponseDTO user4 = registerUser("Barney", "Stinson", 28, "10", 1997, "jkl@gmail.com", "3456", "6666666666");
 
+		if ((user1 == null) || (user2 == null) || (user3 == null) || (user4 == null)) return;
+
 		// Checking Follow requests
+		System.out.println("----------------------sending follow/unfollow requests----------------------------");
 		sendUserInteractionRequest(user1.getId(), user2.getId(), UserInteractionType.FOLLOW);
 		sendUserInteractionRequest(user1.getId(), user3.getId(), UserInteractionType.FOLLOW);
 		sendUserInteractionRequest(user1.getId(), user4.getId(), UserInteractionType.FOLLOW);
@@ -117,6 +101,7 @@ public class CleartripSocialMediaApplication implements CommandLineRunner {
 		sendUserInteractionRequest(user1.getId(), "anonymousUserId", UserInteractionType.UNFOLLOW);
 
 		// Checking if upload posts requests work
+		System.out.println("--------------------------------uploading posts-----------------------------------");
 		PostResponseDTO post1 = uploadPost(user1.getId(), "Writing code for Thinkify Labs");
 		PostResponseDTO post2 = uploadPost(user2.getId(), "Working as an instructor at Scaler academy");
 		PostResponseDTO post3 = uploadPost(user2.getId(), "Secured Very good ratings on teaching sessions");
@@ -128,6 +113,22 @@ public class CleartripSocialMediaApplication implements CommandLineRunner {
 		// Checking if upload post requests handle anonymous inputs
 		PostResponseDTO post8 = uploadPost("anonymousUserId", "Checking with Anonymous user Id");
 		PostResponseDTO post9 = uploadPost(user1.getId(), "");
+
+		// Checking if LIKE/DISLIKE requests work
+		System.out.println("--------------------------sending LIKE/DISLIKE requests------------------------------");
+		interactWithPost(user1.getId(), post2.getId(), PostInteractionType.DISLIKE);
+		interactWithPost(user1.getId(), post2.getId(), PostInteractionType.LIKE);
+		interactWithPost(user1.getId(), post2.getId(), PostInteractionType.LIKE);
+		interactWithPost(user1.getId(), post3.getId(), PostInteractionType.DISLIKE);
+		interactWithPost(user1.getId(), post4.getId(), PostInteractionType.LIKE);
+		interactWithPost(user2.getId(), post2.getId(), PostInteractionType.LIKE);
+		interactWithPost(user2.getId(), post3.getId(), PostInteractionType.LIKE);
+		interactWithPost(user3.getId(), post1.getId(), PostInteractionType.DISLIKE);
+
+		// Checking if Feed generating
+		System.out.println("--------------------------------generating feed-----------------------------------");
+		showFeed(user1.getId());
+		System.out.println(user1.getId());
 	}
 
 }
