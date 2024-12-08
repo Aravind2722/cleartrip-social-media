@@ -28,4 +28,9 @@ public enum ResponseStatus {
         this.code = code;
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return this.getCode() + " " + this.getMessage();
+    }
 }

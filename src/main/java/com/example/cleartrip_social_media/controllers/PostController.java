@@ -24,11 +24,23 @@ public class PostController {
                     ResponseStatus.CREATED,
                     "Post upload successful!"
             );
+        } catch (IllegalArgumentException exception) {
+            return new ResponseDTO<>(
+                    null,
+                    ResponseStatus.BAD_REQUEST,
+                    exception.getMessage() + ", Post upload unsuccessful!"
+            );
         } catch (UserNotFoundException exception) {
             return new ResponseDTO<>(
                     null,
                     ResponseStatus.NOT_FOUND,
                     exception.getMessage() + ", Post upload unsuccessful!"
+            );
+        } catch (Exception exception) {
+            return new ResponseDTO<>(
+                    null,
+                    ResponseStatus.INTERNAL_SERVER_ERROR,
+                    "Something went Wrong, Please try again later!"
             );
         }
     }

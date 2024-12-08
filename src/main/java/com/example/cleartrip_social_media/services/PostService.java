@@ -8,8 +8,10 @@ import com.example.cleartrip_social_media.models.Post;
 import com.example.cleartrip_social_media.models.User;
 import com.example.cleartrip_social_media.repositories.PostRepository;
 import com.example.cleartrip_social_media.repositories.UserRepository;
+import com.example.cleartrip_social_media.validators.PostRequestValidatorDTO;
 import com.fasterxml.uuid.Generators;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,13 +22,18 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostRequestValidatorDTO postRequestValidatorDTO;
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository,
+                       UserRepository userRepository,
+                       @Lazy PostRequestValidatorDTO postRequestValidatorDTO
+    ) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.postRequestValidatorDTO = postRequestValidatorDTO;
     }
     public PostResponseDTO uploadPost(PostRequestDTO postRequestDTO) throws UserNotFoundException {
-        validatePostRequestDTO(postRequestDTO);
+        postRequestValidatorDTO.validate(postRequestDTO);
 
         Optional<User> optionalUser = userRepository.getUserById(postRequestDTO.getUserId());
         if (optionalUser.isEmpty()) throw new UserNotFoundException("User '"+ postRequestDTO.getUserId() +"' does not exist!");
@@ -50,11 +57,6 @@ public class PostService {
                 .setDislikes(post.getDislikes())
                 .setPostedAt(post.getPostedAt())
                 .build();
-    }
-    public void validatePostRequestDTO(PostRequestDTO postRequestDTO) {
-        if (postRequestDTO == null) throw new IllegalArgumentException(
-                "Post Request cannot be empty!"
-        );
     }
 
 }

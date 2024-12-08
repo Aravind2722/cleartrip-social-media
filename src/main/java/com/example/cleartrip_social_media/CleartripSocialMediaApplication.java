@@ -112,10 +112,11 @@ public class CleartripSocialMediaApplication implements CommandLineRunner {
 		sendUserInteractionRequest(user1.getId(), user4.getId(), UserInteractionType.UNFOLLOW);
 
 
-		// Checking if follow/unfollow request works on anonymous users
+		// Checking if follow/unfollow request handles anonymous users
 		sendUserInteractionRequest(user1.getId(), "anonymousUserId", UserInteractionType.FOLLOW);
 		sendUserInteractionRequest(user1.getId(), "anonymousUserId", UserInteractionType.UNFOLLOW);
 
+		// Checking if upload posts requests work
 		PostResponseDTO post1 = uploadPost(user1.getId(), "Writing code for Thinkify Labs");
 		PostResponseDTO post2 = uploadPost(user2.getId(), "Working as an instructor at Scaler academy");
 		PostResponseDTO post3 = uploadPost(user2.getId(), "Secured Very good ratings on teaching sessions");
@@ -123,6 +124,10 @@ public class CleartripSocialMediaApplication implements CommandLineRunner {
 		PostResponseDTO post5 = uploadPost(user3.getId(), "Maintaining over 500 days of streak in Leetcode");
 		PostResponseDTO post6 = uploadPost(user4.getId(), "Half the way through Masters in Computer Sciende part time");
 		PostResponseDTO post7 = uploadPost(user4.getId(), "Actively Learning system design concepts");
+
+		// Checking if upload post requests handle anonymous inputs
+		PostResponseDTO post8 = uploadPost("anonymousUserId", "Checking with Anonymous user Id");
+		PostResponseDTO post9 = uploadPost(user1.getId(), "");
 	}
 
 }
